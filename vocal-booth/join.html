@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Join the session · Vocal Booth</title>
+<style>
+  :root {
+    --bg: #14161a; --card: #1b1e23; --raised: #22262c; --line: #343a44; --muted: #8b929c; --text: #e8eaed;
+    --purple: #9b6dff; --accent: #7c4dff;
+    --hi: linear-gradient(180deg, rgba(255,255,255,.30) 0%, rgba(255,255,255,.04) 48%, rgba(0,0,0,.07) 52%, rgba(0,0,0,.32) 100%);
+    --edge: inset 0 1.25px 0 rgba(255,255,255,.62), inset 0 3px 3px -1px rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.5), inset 0 -4px 4px -2px rgba(0,0,0,.35);
+    --lift: 0 7px 10px rgba(0,0,0,.55);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+         background: var(--bg); color: var(--text); font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; }
+  .card { width: min(460px, 92vw); padding: 28px; border-radius: 16px; border: 1.5px solid var(--purple);
+          background-color: var(--card); background-image: var(--hi); box-shadow: var(--edge), var(--lift); }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  .label { font-size: 11px; font-weight: 600; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; }
+  .code { font: 600 20px ui-monospace, Menlo, monospace; color: var(--purple); margin: 2px 0 14px; word-break: break-all; }
+  .btn { display: block; text-align: center; text-decoration: none; color: #fff; font-weight: 600; font-size: 16px;
+         padding: 12px 18px; border-radius: 22px; margin-top: 12px; border: 1.5px solid var(--purple);
+         background-color: var(--raised); background-image: var(--hi); box-shadow: var(--edge), var(--lift); }
+  .btn.main { background-color: var(--accent); box-shadow: var(--edge), var(--lift), 0 0 18px rgba(124,77,255,.6); }
+  .btn:active { background-image: none; box-shadow: inset 0 2px 5px rgba(0,0,0,.65); }
+  ol { color: var(--muted); padding-left: 20px; margin: 22px 0 0; font-size: 14px; }
+  .missing { color: #f0954f; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>Join the session</h1>
+  <p class="sub">The studio invited you to a recording session with Vocal Booth (Mac).</p>
+
+  <div id="details">
+    <div class="label">Room code</div>
+    <div class="code" id="code">…</div>
+    <div id="pwBlock" hidden>
+      <div class="label">Password</div>
+      <div class="code" id="pw"></div>
+    </div>
+  </div>
+
+  <a class="btn main" id="open" href="#">Open the session</a>
+  <a class="btn" href="https://github.com/diskeditor/lews-apps/raw/main/Vocal-Booth-Client-Installer.pkg">Download Vocal Booth Client</a>
+
+  <ol>
+    <li>Don't have Vocal Booth Client yet? Download it, open the file and install it.</li>
+    <li>Come back here and click <b>Open the session</b>.</li>
+    <li>In Vocal Booth Client, check your microphone and headphones and click <b>Join Room</b>.</li>
+  </ol>
+</div>
+<script>
+  // Everything after "#" stays in the browser (it is never sent to the web server).
+  var p = new URLSearchParams(location.hash.slice(1));
+  var code = p.get("code") || "", pw = p.get("password") || "", server = p.get("server") || "";
+  var link = "vocalbooth://join?code=" + encodeURIComponent(code)
+           + (pw ? "&password=" + encodeURIComponent(pw) : "")
+           + (server ? "&server=" + encodeURIComponent(server) : "");
+  if (code) {
+    document.getElementById("code").textContent = code;
+    if (pw) { document.getElementById("pw").textContent = pw; document.getElementById("pwBlock").hidden = false; }
+    document.getElementById("open").href = link;
+    // Try once straight away: if the app is installed, the browser offers to open it.
+    setTimeout(function () { location.href = link; }, 400);
+  } else {
+    document.getElementById("code").innerHTML = '<span class="missing">This link is missing its room code. Ask the studio to send it again.</span>';
+    document.getElementById("open").style.display = "none";
+  }
+</script>
+</body>
+</html>
